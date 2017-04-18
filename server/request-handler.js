@@ -43,9 +43,8 @@ exports.requestHandler = function(request, response) {
       request.on('end', function() {
         var post = JSON.parse(body);
         messages.results.push(post); 
-
         response.writeHead(statusCode, headers);
-        response.end();
+        response.end(JSON.stringify(post));
       });
 
     } else {
@@ -61,6 +60,7 @@ exports.requestHandler = function(request, response) {
       statusCode = 404;
     }
     response.writeHead(statusCode, headers);
+    messages.results = messages.results.reverse();
     response.end(JSON.stringify(messages));
 
 
