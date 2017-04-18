@@ -1,5 +1,8 @@
 /* Import node's http module: */
+
 var http = require('http');
+
+var handleRequest = require('./request-handler.js').requestHandler;
 
 
 // Every server needs to listen on a port with a unique number. The
@@ -23,8 +26,10 @@ var ip = '127.0.0.1';
 //
 // After creating the server, we will tell it to listen on the given port and IP. */
 var server = http.createServer(handleRequest);
-console.log('Listening on http://' + ip + ':' + port);
+server.on('request', handleRequest);
+
 server.listen(port, ip);
+console.log('Listening on http://' + ip + ':' + port);
 
 // To start this server, run:
 //
@@ -38,4 +43,11 @@ server.listen(port, ip);
 // server.listen() will continue running as long as there is the
 // possibility of serving more requests. To stop your server, hit
 // Ctrl-C on the command line.
+
+
+
+
+
+
+
 
