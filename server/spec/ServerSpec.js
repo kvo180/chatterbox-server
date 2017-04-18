@@ -56,6 +56,47 @@ describe('Node Server Request Listener Function', function() {
     expect(res._ended).to.equal(true);
   });
 
+  it('Should return a 404 if invalid request method', function() {
+    var req = new stubs.request('/classes/messages', 'TEST');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    waitForThen(
+      function() { return res._ended; },
+      function() {
+        expect(res._responseCode).to.equal(404);
+      });
+  });
+
+  it('Should return a 404 if invalid url', function () {
+    var req = new stubs.request('/classes/notRight', 'GET');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    waitForThen(
+      function() { return res._ended; },
+      function() {
+        expect(res._responseCode).to.equal(404);
+      });
+  });
+
+  it('Should return a 404 if post request data is empty', function() {
+    var stubMsg = {}; 
+
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    waitForThen(
+      function() { return res._ended; },
+      function() {
+        expect(res._responseCode).to.equal(404);
+      });
+  });
+
   it('Should accept posts to /classes/room', function() {
     var stubMsg = {
       username: 'Jono',

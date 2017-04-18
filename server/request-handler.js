@@ -37,14 +37,22 @@ exports.requestHandler = function(request, response) {
       var body = '';
 
       request.on('data', function(data) {
-        body += data;
+        body += data; 
       });
 
       request.on('end', function() {
         var post = JSON.parse(body);
-        messages.results.push(post); 
-        response.writeHead(statusCode, headers);
-        response.end(JSON.stringify(post));
+
+        if (Object.keys(post).length === 0) {
+          statusCode = 404;
+          response.writeHead(statusCode, headers);
+          response.end();
+
+        } else {
+          messages.results.push(post); 
+          response.writeHead(statusCode, headers);
+          response.end(JSON.stringify(post));
+        }
       });
 
     } else {
@@ -63,11 +71,9 @@ exports.requestHandler = function(request, response) {
     messages.results = messages.results.reverse();
     response.end(JSON.stringify(messages));
 
-
   } else {
     statusCode = 404; 
     response.writeHead(statusCode, headers);
-    response.write('404 Not Found');
     response.end();
   }
 
