@@ -12,44 +12,36 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
-var querystring = require('querystring');
+var defaultCorsHeaders = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'access-control-allow-headers': 'content-type, accept',
+  'access-control-max-age': 10 // Seconds.
+};
+
 var messages = {
   results: []
-}
+};
 
 exports.requestHandler = function(request, response) {
 
-var statusCode;
-var headers = defaultCorsHeaders;
-headers['Content-Type'] = 'application/json';
+  var statusCode;
+  var headers = defaultCorsHeaders;
+  headers['Content-Type'] = 'application/json';
 
-
-
-/*
-if post && classes/messages
-  process the data
-  push to messages.results
-
-*/
-
-if (request.method === 'POST') {
+  if (request.method === 'POST') {
 
     if (request.url === '/classes/messages' || request.url === '/classes/room') {
       statusCode = 201;
 
-      var body ='';
+      var body = '';
 
       request.on('data', function(data) {
         body += data;
       });
 
       request.on('end', function() {
-        // var post = querystring.parse(body);
         var post = JSON.parse(body);
-        console.log('typeof post:', typeof post);
-
-        console.log('THIS IS THE POST', post.username);
-
         messages.results.push(post); 
 
         response.writeHead(statusCode, headers);
@@ -60,40 +52,30 @@ if (request.method === 'POST') {
       statusCode = 404;
     }
 
-} else if (request.method === 'GET') { //404 test is not working because the no endpoint test is logging as a get request 
+  } else if (request.method === 'GET') {
   
     if (request.url === '/classes/messages' || request.url === '/classes/room') {
       statusCode = 200;
 
-      // console.log(messages.results);  
     } else {
       statusCode = 404;
     }
-      response.writeHead(statusCode, headers);
-      
-      // console.log('messages:', messages);
-      // console.log(typeof messages);
-      // console.log('stringified:', JSON.stringify(messages));
-      // console.log(typeof JSON.stringify(messages));
-      // console.log('parsed:', JSON.parse(messages).results);
-      // console.log(typeof JSON.parse(messages.results));
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify(messages));
 
 
-
-      // console.log('MESSAGEEEE', messages.results[0]);
-      // console.log('typeof message.results[0]:', typeof messages.results[0]);
-      response.end(JSON.stringify(messages));
-
-
-} else {
-  statusCode = 404; 
-  response.writeHead(statusCode, headers);
-  response.write('404 Not Found');
-  response.end();
-}
+  } else {
+    statusCode = 404; 
+    response.writeHead(statusCode, headers);
+    response.write('404 Not Found');
+    response.end();
+  }
 
  
-console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+
+};
+
 
   // The outgoing status.
 
@@ -118,12 +100,6 @@ console.log('Serving request type ' + request.method + ' for url ' + request.url
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-};
-
-
-
-
-
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
@@ -134,10 +110,5 @@ console.log('Serving request type ' + request.method + ' for url ' + request.url
 //
 // Another way to get around this restriction is to serve you chat
 // client from this domain by setting up static file serving.
-var defaultCorsHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10 // Seconds.
-};
+
 
