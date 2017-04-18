@@ -4,11 +4,14 @@ var friendsList = [];
 
 var userName = window.location.search.substring(window.location.search.indexOf('=') + 1, window.location.search.length);
 
+
 var App = function() {
   this.server = clientUrl;
   this.currentUser = userName;
   this.currentRoom;
 };
+
+var app = new App();
 
 App.prototype.init = function() {
   this.fetch();
@@ -41,7 +44,8 @@ App.prototype.fetch = function(newData) {
 
   $.ajax({
     url: context.server,
-    data: 'order=-createdAt',
+    // data: 'order=-createdAt',
+    contentType: 'text/plain',
     type: 'GET',
     success: function(data) {
       context.clearMessages();
@@ -97,7 +101,7 @@ App.prototype.send = function(message) {
     url: clientUrl,
     type: 'POST',
     data: JSON.stringify(message),
-    contentType: 'application/json',
+    contentType: 'text/plain',
     success: function (data) {
       console.log('chatterbox: Message sent');
       context.fetch(app.currentRoom);
@@ -156,13 +160,11 @@ App.prototype.createMessage = function(username, text, roomname) {
   this.send(message);
 };
 
-var app = new App();
-
 $(document).ready(function() {
 
   app.init();
 
-  $('.createMessage').on("click", function(event) {
+  $('.createMessage').on('click', function(event) {
     var messageText = $('.newMessage').val();
     app.createMessage(app.currentUser, messageText, app.currentRoom);
   });

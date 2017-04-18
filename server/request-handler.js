@@ -81,7 +81,7 @@ exports.requestHandler = function(request, response) {
 
 
   // See the note below about CORS headers.
-  
+
 
   // Tell the client we are sending them plain text.
   //
