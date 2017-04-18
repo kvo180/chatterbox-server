@@ -37,19 +37,23 @@ if (request.method === 'POST') {
     if (request.url === '/classes/messages' || request.url === '/classes/room') {
       statusCode = 201;
 
-      var body =''; 
+      var body ='';
 
       request.on('data', function(data) {
-        body += data; 
+        body += data;
       });
 
       request.on('end', function() {
-        var post = querystring.parse(body); 
+        // var post = querystring.parse(body);
+        var post = JSON.parse(body);
+        console.log('typeof post:', typeof post);
+
+        console.log('THIS IS THE POST', post.username);
 
         messages.results.push(post); 
 
         response.writeHead(statusCode, headers);
-        response.end(JSON.stringify(post));
+        response.end();
       });
 
     } else {
@@ -66,9 +70,20 @@ if (request.method === 'POST') {
       statusCode = 404;
     }
       response.writeHead(statusCode, headers);
-      console.log(JSON.stringify(messages));
-      // console.log(JSON.stringify(messages.results[0].username));
+      
+      // console.log('messages:', messages);
+      // console.log(typeof messages);
+      // console.log('stringified:', JSON.stringify(messages));
+      // console.log(typeof JSON.stringify(messages));
+      // console.log('parsed:', JSON.parse(messages).results);
+      // console.log(typeof JSON.parse(messages.results));
+
+
+
+      // console.log('MESSAGEEEE', messages.results[0]);
+      // console.log('typeof message.results[0]:', typeof messages.results[0]);
       response.end(JSON.stringify(messages));
+
 
 } else {
   statusCode = 404; 
@@ -78,7 +93,6 @@ if (request.method === 'POST') {
 }
 
  
-
 console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
   // The outgoing status.
