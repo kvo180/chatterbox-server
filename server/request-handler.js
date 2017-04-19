@@ -11,6 +11,17 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var fs = require('fs'); 
+var messages = {
+  results: []
+};
+
+fs.readFile('messages.txt', 'utf8', function(error, data) {
+  if (error) {
+    return console.error(error);
+  }
+  messages.results = JSON.parse(data);
+});
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -19,9 +30,6 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
-var messages = {
-  results: []
-};
 
 exports.requestHandler = function(request, response) {
 
@@ -50,6 +58,7 @@ exports.requestHandler = function(request, response) {
 
         } else {
           messages.results.push(post); 
+          fs.writeFileSync('./messages.txt', JSON.stringify(messages.results));
           response.writeHead(statusCode, headers);
           response.end(JSON.stringify(post));
         }

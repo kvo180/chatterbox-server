@@ -70,7 +70,7 @@ describe('Node Server Request Listener Function', function() {
   });
 
   it('Should return a 404 if invalid url', function () {
-    var req = new stubs.request('/classes/notRight', 'GET');
+    var req = new stubs.request('/classes/notRight', 'POST');
     var res = new stubs.response();
 
     handler.requestHandler(req, res);
