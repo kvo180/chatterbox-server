@@ -166,3 +166,7 @@ form input[type=text] {
     left: 100px;
     top: 0px;
 }
+
+#buttons {
+    margin: 20px 0px 20px 0px;
+}

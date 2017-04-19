@@ -173,11 +173,13 @@ $(document).ready(function() {
     var roomText = $('.newRoom').val();
     app.clearMessages();
     app.currentRoom = roomText;
+    $('#room').html(app.currentRoom);
     app.renderRoom(roomText);
   });
 
   $('#roomSelect').on('click', 'a', function(event) {
     app.currentRoom = this.textContent.trim();
+    $('#room').html(app.currentRoom);
     app.fetch(app.currentRoom);
   });
 
